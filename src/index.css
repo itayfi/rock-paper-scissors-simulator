@@ -31,9 +31,9 @@ canvas {
     max-width: 100%;
 }
 
-button {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+.controls {
     margin-top: 5px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
 }

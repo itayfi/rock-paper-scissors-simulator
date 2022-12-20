@@ -18,6 +18,12 @@ function init() {
 
     const resetButton = document.querySelector('#reset-button');
     resetButton.addEventListener('click', () => simulation.reset());
+    document.querySelector('#allow-win').addEventListener('change', (event) => {
+        simulation.allowWin = (event.target as HTMLInputElement).checked;
+    });
+    document.querySelector('#destroy-on-collision').addEventListener('change', (event) => {
+        simulation.destroyOnCollision = (event.target as HTMLInputElement).checked;
+    });
 
     window.addEventListener('resize', setSize);
 
@@ -57,7 +63,12 @@ function animationLoop(timestamp: number) {
     requestAnimationFrame(animationLoop);
 }
 
-setInterval(() => simulation.checkMissingTypes(), 1000);
+setInterval(() => {
+    simulation.checkMissingTypes();
+    const icon = icons.get(simulation.getCurrentWinner());
+    if (!icon) return;
+    document.head.querySelector('link[rel=icon]').setAttribute('href', icon.src);
+}, 1000);
 
 init();
 requestAnimationFrame(animationLoop);

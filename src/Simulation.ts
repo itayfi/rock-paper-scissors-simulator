@@ -6,6 +6,8 @@ export default class Simulation {
     actors: Actor[];
     width: number;
     height: number;
+    allowWin: boolean = false;
+    destroyOnCollision: boolean = false;
 
     constructor(width: number, height: number) {
         this.actors = [];
@@ -24,7 +26,11 @@ export default class Simulation {
     }
 
     step(dt: number) {
-        this.actors.forEach((actor) => {
+        if (!Number.isFinite(dt)) {
+            return;
+        }
+        let losersToDestroy: number[] = [];
+        this.actors.forEach((actor, actorIndex) => {
             let force = new Vector(0, 0);
             let totalWeight = 0;
 
@@ -36,7 +42,11 @@ export default class Simulation {
 
                 if (vectorTo.magnitude() < ACTOR_RADIUS * 2) {
                     if (actor.compare(other) < 0) {
-                        actor.type = other.type;
+                        if (this.destroyOnCollision) {
+                            losersToDestroy.push(actorIndex);
+                        } else {
+                            actor.type = other.type;
+                        }
                     }
 
                     force = force.add(dir.copy().multiply(-1));
@@ -53,6 +63,10 @@ export default class Simulation {
             }
             this.checkBoundaries(actor, dt);
         });
+
+        for (const actorIndex of losersToDestroy) {
+            this.actors.splice(actorIndex, 1);
+        }
     }
 
     private checkBoundaries(actor: Actor, dt: number): void {
@@ -68,10 +82,27 @@ export default class Simulation {
     }
 
     checkMissingTypes(): void {
+        if (this.allowWin) {
+            return;
+        }
         for (const type of [ActorType.rock, ActorType.paper, ActorType.scissor]) {
             if (!this.actors.some((actor) => actor.type === type)) {
                 this.actors[Math.floor(Math.random() * this.actors.length)].type = type;
             }
         }
+    }
+
+    getCurrentWinner(): ActorType {
+        const counts = new Map<ActorType, number>();
+        this.actors.forEach((actor) => counts.set(actor.type, (counts.get(actor.type) || 0) + 1));
+        let maxType: ActorType = null;
+        let maxCount = 0;
+        for (const [type, count] of Array.from(counts.entries())) {
+            if (count > maxCount) {
+                maxCount = count;
+                maxType = type;
+            }
+        }
+        return maxType;
     }
 }
