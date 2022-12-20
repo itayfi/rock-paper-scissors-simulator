@@ -1,12 +1,16 @@
 import Vector from "ts-vector";
 import Actor, { ActorType } from "./Actor";
-import { ACTOR_COUNT, ACTOR_RADIUS, HEIGHT, MAX_V, WIDTH } from "./consts";
+import { ACTOR_COUNT, ACTOR_RADIUS, MAX_V } from "./consts";
 
 export default class Simulation {
     actors: Actor[];
+    width: number;
+    height: number;
 
-    constructor() {
+    constructor(width: number, height: number) {
         this.actors = [];
+        this.width = width;
+        this.height = height;
     }
 
     reset() {
@@ -14,7 +18,7 @@ export default class Simulation {
         for (let i = 0; i < ACTOR_COUNT; i++) {
             this.actors.push(new Actor(
                 i % 3,
-                new Vector(Math.random() * WIDTH, Math.random() * HEIGHT)
+                new Vector(Math.random() * this.width, Math.random() * this.height)
             ));
         }
     }
@@ -53,13 +57,13 @@ export default class Simulation {
 
     private checkBoundaries(actor: Actor, dt: number): void {
         actor.pos = actor.pos.add(actor.v.multiply(dt));
-        if (actor.pos[0] < ACTOR_RADIUS || actor.pos[0] > WIDTH - ACTOR_RADIUS) {
+        if (actor.pos[0] < ACTOR_RADIUS || actor.pos[0] > this.width - ACTOR_RADIUS) {
             actor.v[0] = -actor.v[0];
-            actor.pos[0] = Math.max(ACTOR_RADIUS, Math.min(WIDTH - ACTOR_RADIUS, actor.pos[0]));
+            actor.pos[0] = Math.max(ACTOR_RADIUS, Math.min(this.width - ACTOR_RADIUS, actor.pos[0]));
         }
-        if (actor.pos[1] < ACTOR_RADIUS || actor.pos[1] > HEIGHT - ACTOR_RADIUS) {
+        if (actor.pos[1] < ACTOR_RADIUS || actor.pos[1] > this.height - ACTOR_RADIUS) {
             actor.v[1] = -actor.v[1];
-            actor.pos[1] = Math.max(ACTOR_RADIUS, Math.min(HEIGHT - ACTOR_RADIUS, actor.pos[1]));
+            actor.pos[1] = Math.max(ACTOR_RADIUS, Math.min(this.height - ACTOR_RADIUS, actor.pos[1]));
         }
     }
 

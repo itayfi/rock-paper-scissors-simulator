@@ -1,5 +1,5 @@
 import { ActorType } from "./Actor";
-import { ACTOR_RADIUS, HEIGHT, WIDTH } from "./consts";
+import { ACTOR_RADIUS, DEFAULT_HEIGHT, DEFAULT_WIDTH } from "./consts";
 import Simulation from "./Simulation";
 import './index.css';
 
@@ -10,17 +10,27 @@ const icons = new Map<ActorType, HTMLImageElement>([
 ]);
 
 let canvas: HTMLCanvasElement;
-const simulation = new Simulation();
+const simulation = new Simulation(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
 function init() {
     canvas = document.querySelector('canvas');
-    canvas.width = WIDTH;
-    canvas.height = HEIGHT;
+    setSize();
 
     const resetButton = document.querySelector('#reset-button');
     resetButton.addEventListener('click', () => simulation.reset());
 
+    window.addEventListener('resize', setSize);
+
     simulation.reset();
+}
+
+function setSize() {
+    const newWidth = window.innerWidth - 20;
+    const newHeight = window.innerHeight - 30 - document.querySelector('footer').clientHeight - document.querySelector('#reset-button').clientHeight;
+    canvas.width = newWidth;
+    canvas.height = newHeight;
+    simulation.width = newWidth;
+    simulation.height = newHeight;
 }
 
 function getImage(icon: string): HTMLImageElement {
@@ -38,7 +48,7 @@ function animationLoop(timestamp: number) {
     }
     lastTimestamp = timestamp;
 
-    context.clearRect(0, 0, WIDTH, HEIGHT);
+    context.clearRect(0, 0, canvas.width, canvas.height);
 
     simulation.actors.forEach((actor) => {
         context.drawImage(icons.get(actor.type), actor.pos[0] - ACTOR_RADIUS, actor.pos[1] - ACTOR_RADIUS, ACTOR_RADIUS * 2, ACTOR_RADIUS * 2);
