@@ -6,11 +6,21 @@
     <title>
         Rock-Paper-Scissor
     </title>
-<meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="scissor.png"><script defer src="main.b0e39c24ae5225d09d0e.js"></script></head>
+<meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="paper.png"><script defer src="main.9931d1b3c3253022c8b6.js"></script></head>
 
 <body>
     <canvas width="500" height="500"></canvas>
-    <button id="reset-button">Reset</button>
+    <div class="controls">
+        <button id="reset-button">Reset</button>
+        <label>
+            <input type="checkbox" id="allow-win"/>
+            Allow win
+        </label>
+        <label>
+            <input type="checkbox" id="destroy-on-collision"/>
+            Destroy on collision
+        </label>
+    </div>
     <footer>
         <a href="https://www.flaticon.com/free-icons/rock" title="rock icons">Rock icons created by Icongeek26 -
             Flaticon</a>
