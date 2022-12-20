@@ -57,7 +57,9 @@ export default class Simulation {
                 totalWeight += weight;
             });
 
-            actor.v = actor.v.add(force.divide(totalWeight).multiply(dt * 100));
+            if (totalWeight !== 0) {
+                actor.v = actor.v.add(force.divide(totalWeight).multiply(dt * 100));
+            }
             if (actor.v.magnitude() > MAX_V) {
                 actor.v = actor.v.normalizeVector().multiply(MAX_V);
             }
