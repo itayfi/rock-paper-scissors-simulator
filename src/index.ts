@@ -25,7 +25,7 @@ function init() {
 
 function getImage(icon: string): HTMLImageElement {
     const image = new Image();
-    image.src = `/${icon}.png`;
+    image.src = `${icon}.png`;
     return image;
 }
 

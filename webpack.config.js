@@ -1,3 +1,4 @@
+const CopyPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
@@ -26,8 +27,15 @@ module.exports = {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
   },
-  plugins: [new HtmlWebpackPlugin({
-    title: 'Rock-Paper-Scissor',
-    favicon: `public/${['rock', 'paper', 'scissor'][Math.floor(Math.random() * 3)]}.png`
-  })],
+  plugins: [
+    new HtmlWebpackPlugin({
+      title: 'Rock-Paper-Scissor',
+      favicon: `public/${['rock', 'paper', 'scissor'][Math.floor(Math.random() * 3)]}.png`
+    }),
+    new CopyPlugin({
+      patterns: [
+        { from: "public", to: "" },
+      ],
+    }),
+  ],
 };
