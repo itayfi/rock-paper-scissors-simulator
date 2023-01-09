@@ -2,6 +2,7 @@ import { ActorType } from "./Actor";
 import { ACTOR_RADIUS, DEFAULT_HEIGHT, DEFAULT_WIDTH } from "./consts";
 import Simulation from "./Simulation";
 import './index.css';
+import Vector from "ts-vector";
 
 const icons = new Map<ActorType, HTMLImageElement>([
     [ActorType.rock, getImage('rock')],
@@ -16,8 +17,9 @@ function init() {
     canvas = document.querySelector('canvas');
     setSize();
 
-    const resetButton = document.querySelector('#reset-button');
-    resetButton.addEventListener('click', () => simulation.reset());
+    document.querySelector('#reset-button').addEventListener('click', () => simulation.reset());
+    document.querySelector('#add-one-button').addEventListener('click', addActor);
+    document.querySelector('#add-ten-button').addEventListener('click', () => Vector.range(10).forEach(addActor));
     document.querySelector('#allow-win').addEventListener('change', (event) => {
         simulation.allowWin = (event.target as HTMLInputElement).checked;
     });
@@ -28,6 +30,10 @@ function init() {
     window.addEventListener('resize', setSize);
 
     simulation.reset();
+}
+
+function addActor() {
+    simulation.addActor(Math.floor(Math.random() * 3));
 }
 
 function setSize() {

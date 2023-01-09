@@ -17,16 +17,20 @@ export default class Simulation {
 
     reset() {
         this.actors.splice(0);
-        for (let i = 0; i < ACTOR_COUNT; i++) {
-            this.actors.push(new Actor(
-                i % 3,
-                new Vector(Math.random() * this.width, Math.random() * this.height)
-            ));
-        }
+        Vector.range(0, ACTOR_COUNT).forEach((i) => this.addActor(i % 3));
+    }
+
+    addActor(type: ActorType) {
+        const actor = new Actor(
+            type,
+            new Vector(Math.random() * this.width, Math.random() * this.height)
+        );
+        this.actors.push(actor);
+        return actor;
     }
 
     step(dt: number) {
-        if (!Number.isFinite(dt)) {
+        if (!Number.isFinite(dt) || this.width <= 0 || this.height <= 0) {
             return;
         }
         let losersToDestroy: number[] = [];
@@ -37,6 +41,7 @@ export default class Simulation {
             this.actors.forEach((other) => {
                 if (actor === other) return;
                 const vectorTo = Vector.subtract(other.pos, actor.pos);
+                if (vectorTo.dot(vectorTo) < Number.EPSILON) return;
                 const weight = 1 / vectorTo.dot(vectorTo);
                 const dir = vectorTo.copy().normalizeVector();
 
